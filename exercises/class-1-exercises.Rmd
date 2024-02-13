@@ -16,7 +16,10 @@ library(rethinking)
 
 ## Supporting code
 
-Below is code from Chapter 2 of the book that you can use to do the exercises. Not all the code you require is here though. Make sure to not rush it and take time to play around with each function. :))
+Below is code from Chapter 2 of the book that you can use to do the exercises.
+Not all the code you require is here though.
+Make sure to not rush it and take time to play around with each function.
+:))
 
 ```{r}
 # Grid Approximation
@@ -47,11 +50,12 @@ mtext("20 points")
 
 ### Easy
 
-2E1. 
+2E1.
 
 ```{r}
 
-# Your answer here.
+(2) Pr(rain|Monday)
+# (4) Pr(rain, Monday)/ Pr(Monday
 
 ```
 
@@ -59,7 +63,7 @@ mtext("20 points")
 
 ```{r}
 
-# Your answer here.
+(3) The probability that it is Monday, given that it is raining
 
 ```
 
@@ -67,7 +71,8 @@ mtext("20 points")
 
 ```{r}
 
-# Your answer here.
+(1) Pr(Monday|rain)
+# (4) Pr(rain|Monday) Pr(Monday)/ Pr(rain)
 
 ```
 
@@ -75,7 +80,7 @@ mtext("20 points")
 
 ```{r}
 
-# Discuss in pairs/groups. Ask me for a hint if you feel like it.
+The probability of water being 0.7 reflects our subjective estimate based on available data, not an exact truth. Therfore it is subject to change as the new data is presented, and not a firm statement.
 
 ```
 
@@ -84,25 +89,66 @@ mtext("20 points")
 2M1.
 
 ```{r}
+p_grid <- seq(from = 0, to = 1, length.out = 100)
+prior <- rep(1, 100)
 
-# Write your code here.
+# (1) W, W, W
+likelihood_1 <- dbinom(3, size = 3, prob = p_grid)
+posterior_1 <- likelihood_1 * prior / sum(likelihood_1 * prior)
+plot(posterior_1 ~ p_grid, type = "l")
+
+# (2) W, W, W, L
+likelihood_2 <- dbinom(3, size = 4, prob = p_grid)
+posterior_2 <- likelihood_2 * prior / sum(likelihood_2 * prior)
+plot(posterior_2 ~ p_grid, type = "l")
+
+# (3) L, W, W, L, W, W, W
+likelihood_3 <- dbinom(5, size = 7, prob = p_grid)
+posterior_3 <- likelihood_3 * prior / sum(likelihood_3 * prior)
+plot(posterior_3 ~ p_grid, type = "l")
 
 ```
 
 2M2.
 
 ```{r}
+p_grid <- seq(from = 0, to = 1, length.out = 100)
+prior <- ifelse(p_grid < .5, 0, 1) # eliminates the values <.5
 
-# In the book, McElreath says that we can do much better than choosing a uniform prior for estimating the coverage of water. Is this what we are doing here? How does that impact our estimation?
+# (1) W, W, W
+likelihood_1 <- dbinom(3, size = 3, prob = p_grid)
+posterior_1 <- likelihood_1 * prior / sum(likelihood_1 * prior)
+plot(posterior_1 ~ p_grid, type = "l")
 
+# (2) W, W, W, L
+likelihood_2 <- dbinom(3, size = 4, prob = p_grid)
+posterior_2 <- likelihood_2 * prior / sum(likelihood_2 * prior)
+plot(posterior_2 ~ p_grid, type = "l")
+
+# (3) L, W, W, L, W, W, W
+likelihood_3 <- dbinom(5, size = 7, prob = p_grid)
+posterior_3 <- likelihood_3 * prior / sum(likelihood_3 * prior)
+plot(posterior_3 ~ p_grid, type = "l")
 ```
 
 2M3.
 
 ```{r}
+"""
+Pr(land|E) = 1 − .7 = .3
+Pr(land|M) = 1
 
-# Use the Bayes formula!
+Pr(E) = .5
+Pr(M) = .5
 
+Pr(E|land) = 
+Pr(land|E)*Pr(E) / Pr(land)
+
+Pr(E|land) = 
+Pr(land|E)*Pr(E) / Pr(land|E)*Pr(E) + Pr(land|M)*Pr(M)
+"""
+
+0.3*0.5 / ( 0.3*0.5 + 1*0.5 )
 ```
 
 For the exercises below, I highly suggest you to grab a piece of paper and try to solve the problems in a 'visual' way.
@@ -111,7 +157,7 @@ For the exercises below, I highly suggest you to grab a piece of paper and try t
 
 ```{r}
 
-# Write your probability here.
+There are three ways to see a black side. 2x from black-black and 1x time from black-white. So 2/3 ways are possible for the other side to be black.
 
 ```
 
@@ -119,7 +165,7 @@ For the exercises below, I highly suggest you to grab a piece of paper and try t
 
 ```{r}
 
-# Write your probability here.
+Now there are 5 ways, 4x from 2x black-black and 1x from black-white. The probability is 4/5.
 
 ```
 
@@ -127,6 +173,80 @@ For the exercises below, I highly suggest you to grab a piece of paper and try t
 
 ```{r}
 
-# Write your probability here.
+2x b-b 1x b-w 0x w-w #black side
+1d b-b 2d b-w 3d w-w #card drawn
 
+2x * 1d = 2 b-b
+1x * 2d = 2 b-w
+
+4 ways to see a black card, two of those are black-black so 2/4 = .5 probability
+
+```
+
+2M7.
+
+```{r}
+b-b:
+  1. card: b-b or b-w (2 ways)
+  2. card: b-w or b-b (3 ways)
+  2 * 3 = 6
+b-w:
+  1. card: b-w (1 way)
+  2. card: w-w (2 ways)
+  1 * 2 = 2
+w-w: 0
+
+6 + 2 = 8 ways for black side up, then white side up
+so for b-b, 6/8 = .75
+```
+
+### Hard
+
+2H1.
+
+```{r}
+conditional probability
+Pr(twins2|twins1) =
+  Pr(twins1, twins2) / Pr(twins)
+
+Pr(twins) = 1/2(.1)+1/2(.2) = .15
+Pr(twins1, twins2) = 1/2(.1)+1/2(.4) = .025
+
+Pr(twins2|twins1) = .025/.15 = 1/6
+```
+
+2H2.
+```{r}
+Pr(A|twins1) = 
+  Pr(twins1|A)*Pr(A) / Pr(twins) = (.1*.5)/.15 = 1/3
+```
+
+2H3.
+```{r}
+Pr(A|S) =
+  Pr(S|A)*Pr(A) / Pr(S)
+
+Pr(S|A) = 1 - .1 = .9; Pr(S|B) = .8
+Pr(S) = Pr(S|A)*Pr(A) + Pr(S|B)*Pr(B) = .9*1/3 + .8*2/3 = 5/6
+
+Pr(A|S) = (.9*1/3)/5/6 = .36
+```
+
+2H4.
+```{r}
+Pr(tA|A) = .8
+Pr(tB|B) = .65
+Pr(tA|B) = 1 - .65 = .35
+
+Pr(A) = .5 # prior
+
+Pr(A|tA) = .8*.5 / .8*.5+.35*.5 = .7
+# Pr(tA|A)*Pr(A) / Pr(tA|A)*Pr(A)+Pr(tA|B)*Pr(A)
+
+.5 -> .7 # test validity 
+
+# add birth info as a prior
+# Pr(tA|A)*Pr(A) / Pr(tA)
+Pr(A) = .36 # prior
+Pr(A|tA) = .8*.36 / .36*.8+(1-.36)*.35 = .56 # species A -> test A -> twins (first birth) -> singleton (second birth)
 ```
